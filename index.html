@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Goblin Capital — Death Roll</title>
+  <style>
+    :root{
+      --bg:#0b0f0e;
+      --card:#111816;
+      --muted:#7f8c86;
+      --text:#e9f2ee;
+      --accent:#00c6a0;
+      --danger:#ff5c5c;
+      --line:#1f2a26;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 16px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      --sans: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      background: radial-gradient(900px 600px at 20% 0%, rgba(0,198,160,.18), transparent 60%),
+                  radial-gradient(800px 500px at 90% 10%, rgba(0,198,160,.10), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+    }
+    .wrap{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 18px 14px 28px;
+    }
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+    }
+    .brand{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+    .brand h1{
+      margin:0;
+      font-size:18px;
+      letter-spacing:.2px;
+      line-height:1.1;
+    }
+    .brand .sub{
+      color:var(--muted);
+      font-size:12px;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background: rgba(255,255,255,.03);
+      box-shadow: var(--shadow);
+      font-size:12px;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .pill b{ color:var(--text); font-weight:700; }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:14px;
+    }
+    @media (max-width: 900px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 14px;
+    }
+    .card h2{
+      margin:0 0 10px;
+      font-size:14px;
+      color:var(--muted);
+      font-weight:700;
+      letter-spacing:.2px;
+      text-transform:uppercase;
+    }
+
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .field{
+      flex:1 1 160px;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    label{
+      font-size:12px;
+      color:var(--muted);
+    }
+    input, select{
+      width:100%;
+      padding:10px 11px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.25);
+      color: var(--text);
+      outline:none;
+    }
+    input::placeholder{ color: rgba(233,242,238,.35); }
+    input:focus, select:focus{
+      border-color: rgba(0,198,160,.55);
+      box-shadow: 0 0 0 3px rgba(0,198,160,.12);
+    }
+
+    .btns{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top: 10px;
+    }
+    button{
+      appearance:none;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor:pointer;
+      font-weight:700;
+      transition: transform .06s ease, border-color .15s ease, background .15s ease;
+    }
+    button:hover{ border-color: rgba(0,198,160,.5); background: rgba(0,198,160,.08); }
+    button:active{ transform: translateY(1px); }
+    button.primary{
+      border-color: rgba(0,198,160,.55);
+      background: rgba(0,198,160,.14);
+    }
+    button.danger{
+      border-color: rgba(255,92,92,.55);
+      background: rgba(255,92,92,.10);
+    }
+    button:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+    }
+
+    .big{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+      margin-top: 12px;
+    }
+    @media (max-width: 520px){
+      .big{ grid-template-columns: 1fr; }
+    }
+    .panel{
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 12px;
+      background: rgba(0,0,0,.22);
+    }
+    .panel .title{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:10px;
+      gap:10px;
+    }
+    .panel .title b{ font-size:13px; }
+    .tag{
+      font-size:11px;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      color: var(--muted);
+    }
+    .statline{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: rgba(233,242,238,.92);
+    }
+    .statline span{ color: var(--muted); font-family: var(--sans); font-size:12px; margin-right:6px; }
+
+    .rollbox{
+      display:flex;
+      align-items:baseline;
+      justify-content:space-between;
+      gap:10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.35);
+      margin-top: 10px;
+    }
+    .rollbox .n{
+      font-family: var(--mono);
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--accent);
+    }
+    .rollbox .m{
+      font-size:12px;
+      color: var(--muted);
+    }
+
+    .log{
+      max-height: 320px;
+      overflow:auto;
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(0,0,0,.22);
+      padding: 10px 10px;
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .log .entry{
+      padding: 6px 6px;
+      border-bottom:1px dashed rgba(31,42,38,.9);
+    }
+    .log .entry:last-child{ border-bottom: none; }
+    .good{ color: rgba(0,198,160,.95); }
+    .bad{ color: rgba(255,92,92,.95); }
+    .muted{ color: var(--muted); }
+
+    .footer{
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 11px;
+      text-align:right;
+    }
+    a{ color: var(--muted); text-decoration:none; }
+    a:hover{ color: var(--text); text-decoration:underline; }
+  </style>
+</head>
+
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand">
+      <h1>Goblin Capital — Death Roll</h1>
+      <div class="sub">WoW /roll tarzı mini oyun • lokal istatistikler • bot opsiyonu</div>
+    </div>
+    <div class="pill">
+      Current Max: <b id="curMaxPill">—</b>
+      • Turn: <b id="turnPill">—</b>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Oyun Ayarları</h2>
+
+      <div class="row">
+        <div class="field">
+          <label>Oyuncu 1</label>
+          <input id="p1" placeholder="Örn: Altug" value="Player1">
+        </div>
+        <div class="field">
+          <label>Oyuncu 2</label>
+          <input id="p2" placeholder="Örn: GoblinBot" value="GoblinBot">
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:10px;">
+        <div class="field">
+          <label>Başlangıç Max (ör. 1000)</label>
+          <input id="startMax" type="number" min="2" step="1" value="1000">
+        </div>
+        <div class="field">
+          <label>Bahis (g)</label>
+          <input id="wager" type="number" min="0" step="1" value="1000">
+        </div>
+        <div class="field">
+          <label>Bot (Oyuncu 2)</label>
+          <select id="botMode">
+            <option value="on">Açık (otomatik)</option>
+            <option value="off">Kapalı</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="btns">
+        <button class="primary" id="newGameBtn">New Game</button>
+        <button id="rollBtn" disabled>Roll</button>
+        <button id="autoBtn" disabled>Auto Play</button>
+        <button class="danger" id="resetStatsBtn">Reset Stats</button>
+      </div>
+
+      <div class="big">
+        <div class="panel">
+          <div class="title">
+            <b>Round</b>
+            <span class="tag" id="stateTag">Not started</span>
+          </div>
+
+          <div class="rollbox">
+            <div>
+              <div class="m">Last roll</div>
+              <div class="n" id="lastRoll">—</div>
+            </div>
+            <div style="text-align:right;">
+              <div class="m">Next max</div>
+              <div class="n" id="nextMax">—</div>
+            </div>
+          </div>
+
+          <div style="margin-top:10px;" class="statline">
+            <div><span>Wager:</span><b id="wagerLine">—</b> g</div>
+            <div><span>Loser pays:</span><b id="loserPays">—</b> g</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="title">
+            <b>Stats (local)</b>
+            <span class="tag">Saved</span>
+          </div>
+          <div class="statline" id="statsBox"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Roll Log</h2>
+      <div class="log" id="log"></div>
+      <div class="footer">
+        Tip: ID/Wowhead tarzı değil; bu oyun tamamen lokal çalışır. 🎲
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  // --- State ---
+  let state = {
+    started: false,
+    finished: false,
+    p1: "Player1",
+    p2: "GoblinBot",
+    startMax: 1000,
+    curMax: 1000,
+    wager: 1000,
+    turn: 1, // 1 -> p1, 2 -> p2
+    lastRoll: null,
+    autoplay: false,
+    botMode: "on",
+  };
+
+  // --- DOM ---
+  const el = (id) => document.getElementById(id);
+  const p1El = el("p1");
+  const p2El = el("p2");
+  const startMaxEl = el("startMax");
+  const wagerEl = el("wager");
+  const botModeEl = el("botMode");
+
+  const newGameBtn = el("newGameBtn");
+  const rollBtn = el("rollBtn");
+  const autoBtn = el("autoBtn");
+  const resetStatsBtn = el("resetStatsBtn");
+
+  const curMaxPill = el("curMaxPill");
+  const turnPill = el("turnPill");
+  const stateTag = el("stateTag");
+  const lastRollEl = el("lastRoll");
+  const nextMaxEl = el("nextMax");
+  const wagerLine = el("wagerLine");
+  const loserPays = el("loserPays");
+  const logEl = el("log");
+  const statsBox = el("statsBox");
+
+  // --- Local stats ---
+  const STATS_KEY = "goblin_capital_deathroll_stats_v1";
+  function loadStats(){
+    try{
+      const raw = localStorage.getItem(STATS_KEY);
+      if(!raw) return { games:0, p1Wins:0, p2Wins:0, lastWinner:null, lastLoser:null };
+      return JSON.parse(raw);
+    }catch(e){
+      return { games:0, p1Wins:0, p2Wins:0, lastWinner:null, lastLoser:null };
+    }
+  }
+  function saveStats(s){ localStorage.setItem(STATS_KEY, JSON.stringify(s)); }
+
+  function renderStats(){
+    const s = loadStats();
+    const p1 = state.p1 || "Player1";
+    const p2 = state.p2 || "Player2";
+    statsBox.innerHTML = `
+      <div><span>Games:</span><b>${s.
