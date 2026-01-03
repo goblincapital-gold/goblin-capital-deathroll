@@ -1,407 +1,669 @@
-<!doctype html>
-<html lang="tr">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Goblin Capital — Death Roll</title>
-  <style>
-    :root{
-      --bg:#0b0f0e;
-      --card:#111816;
-      --muted:#7f8c86;
-      --text:#e9f2ee;
-      --accent:#00c6a0;
-      --danger:#ff5c5c;
-      --line:#1f2a26;
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
-      --radius: 16px;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
-      --sans: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Death Roll</title>
 
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:var(--sans);
-      background: radial-gradient(900px 600px at 20% 0%, rgba(0,198,160,.18), transparent 60%),
-                  radial-gradient(800px 500px at 90% 10%, rgba(0,198,160,.10), transparent 55%),
-                  var(--bg);
-      color:var(--text);
-    }
-    .wrap{
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 18px 14px 28px;
-    }
-    .topbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom:14px;
-    }
-    .brand{
-      display:flex;
-      flex-direction:column;
-      gap:2px;
-    }
-    .brand h1{
-      margin:0;
-      font-size:18px;
-      letter-spacing:.2px;
-      line-height:1.1;
-    }
-    .brand .sub{
-      color:var(--muted);
-      font-size:12px;
-    }
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 10px;
-      border:1px solid var(--line);
-      border-radius:999px;
-      background: rgba(255,255,255,.03);
-      box-shadow: var(--shadow);
-      font-size:12px;
-      color:var(--muted);
-      white-space:nowrap;
-    }
-    .pill b{ color:var(--text); font-weight:700; }
+    <style>
+        :root {
+            --bg-color: #121212;
+            --panel-color: #1f1f1f;
+            --accent-color: #00c6a0;
+            --danger-color: #e74c3c;
+            --success-color: #2ecc71;
+            --text-color: #f1f1f1;
+            --input-bg: #2b2b2b;
+            --human-color: #3498db;
+            --bot-color: #9b59b6;
+        }
 
-    .grid{
-      display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap:14px;
-    }
-    @media (max-width: 900px){
-      .grid{ grid-template-columns: 1fr; }
-    }
-    .card{
-      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 14px;
-    }
-    .card h2{
-      margin:0 0 10px;
-      font-size:14px;
-      color:var(--muted);
-      font-weight:700;
-      letter-spacing:.2px;
-      text-transform:uppercase;
-    }
+        body {
+            font-family: Arial, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
 
-    .row{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-    .field{
-      flex:1 1 160px;
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-    }
-    label{
-      font-size:12px;
-      color:var(--muted);
-    }
-    input, select{
-      width:100%;
-      padding:10px 11px;
-      border-radius:12px;
-      border:1px solid var(--line);
-      background: rgba(0,0,0,.25);
-      color: var(--text);
-      outline:none;
-    }
-    input::placeholder{ color: rgba(233,242,238,.35); }
-    input:focus, select:focus{
-      border-color: rgba(0,198,160,.55);
-      box-shadow: 0 0 0 3px rgba(0,198,160,.12);
-    }
+        .container {
+            max-width: 520px;
+            margin: 20px auto;
+            background: var(--panel-color);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            border: 1px solid #333;
+        }
 
-    .btns{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top: 10px;
-    }
-    button{
-      appearance:none;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.04);
-      color: var(--text);
-      padding: 10px 12px;
-      border-radius: 12px;
-      cursor:pointer;
-      font-weight:700;
-      transition: transform .06s ease, border-color .15s ease, background .15s ease;
-    }
-    button:hover{ border-color: rgba(0,198,160,.5); background: rgba(0,198,160,.08); }
-    button:active{ transform: translateY(1px); }
-    button.primary{
-      border-color: rgba(0,198,160,.55);
-      background: rgba(0,198,160,.14);
-    }
-    button.danger{
-      border-color: rgba(255,92,92,.55);
-      background: rgba(255,92,92,.10);
-    }
-    button:disabled{
-      opacity:.55;
-      cursor:not-allowed;
-    }
+        h1 {
+            margin-top: 0;
+            font-size: 2rem;
+            color: var(--accent-color);
+        }
 
-    .big{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:12px;
-      margin-top: 12px;
-    }
-    @media (max-width: 520px){
-      .big{ grid-template-columns: 1fr; }
-    }
-    .panel{
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 12px;
-      background: rgba(0,0,0,.22);
-    }
-    .panel .title{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      margin-bottom:10px;
-      gap:10px;
-    }
-    .panel .title b{ font-size:13px; }
-    .tag{
-      font-size:11px;
-      padding:4px 8px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      color: var(--muted);
-    }
-    .statline{
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-      font-family: var(--mono);
-      font-size: 12px;
-      color: rgba(233,242,238,.92);
-    }
-    .statline span{ color: var(--muted); font-family: var(--sans); font-size:12px; margin-right:6px; }
+        .phase { display: none; }
+        .phase.active { display: block; }
 
-    .rollbox{
-      display:flex;
-      align-items:baseline;
-      justify-content:space-between;
-      gap:10px;
-      padding: 10px 12px;
-      border-radius: 14px;
-      border:1px solid var(--line);
-      background: rgba(0,0,0,.35);
-      margin-top: 10px;
-    }
-    .rollbox .n{
-      font-family: var(--mono);
-      font-size: 26px;
-      font-weight: 800;
-      color: var(--accent);
-    }
-    .rollbox .m{
-      font-size:12px;
-      color: var(--muted);
-    }
+        input[type="text"], input[type="number"] {
+            padding: 10px;
+            width: 70%;
+            border-radius: 5px;
+            border: none;
+            margin: 5px 0;
+            background: var(--input-bg);
+            color: var(--text-color);
+            font-size: 1rem;
+        }
 
-    .log{
-      max-height: 320px;
-      overflow:auto;
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      background: rgba(0,0,0,.22);
-      padding: 10px 10px;
-      font-family: var(--mono);
-      font-size: 12px;
-      line-height: 1.45;
-    }
-    .log .entry{
-      padding: 6px 6px;
-      border-bottom:1px dashed rgba(31,42,38,.9);
-    }
-    .log .entry:last-child{ border-bottom: none; }
-    .good{ color: rgba(0,198,160,.95); }
-    .bad{ color: rgba(255,92,92,.95); }
-    .muted{ color: var(--muted); }
+        button {
+            padding: 10px 15px;
+            margin-top: 10px;
+            background: var(--accent-color);
+            border: none;
+            border-radius: 6px;
+            color: #111;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            transition: 0.2s;
+        }
+        button:hover { opacity: 0.9; }
+        button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
 
-    .footer{
-      margin-top: 12px;
-      color: var(--muted);
-      font-size: 11px;
-      text-align:right;
-    }
-    a{ color: var(--muted); text-decoration:none; }
-    a:hover{ color: var(--text); text-decoration:underline; }
-  </style>
+        .btn-primary { background: var(--accent-color); }
+        .btn-danger { background: var(--danger-color); color: #fff; }
+        .btn-small { font-size: 0.8rem; padding: 8px 12px; width: auto; }
+
+        .player-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .player-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #2a2a2a;
+            padding: 8px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .player-item input {
+            width: 55%;
+            margin: 0;
+        }
+
+        .bot-toggle {
+            cursor: pointer;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            user-select: none;
+            font-weight: bold;
+        }
+        .bot-toggle.is-human { background: rgba(52,152,219,0.18); color: #a9d7ff; border: 1px solid rgba(52,152,219,0.35); }
+        .bot-toggle.is-bot   { background: rgba(155,89,182,0.18); color: #e0c4ff; border: 1px solid rgba(155,89,182,0.35); }
+
+        .remove-btn {
+            background: transparent;
+            color: #aaa;
+            border: none;
+            font-size: 1rem;
+            width: auto;
+            cursor: pointer;
+            margin: 0;
+            padding: 0 6px;
+        }
+        .remove-btn:hover { color: #fff; }
+
+        .turn-badge {
+            font-size: 1.1rem;
+            padding: 10px;
+            border-radius: 10px;
+            background: #2a2a2a;
+            margin: 10px 0;
+            border: 1px solid #333;
+        }
+
+        .game-status {
+            background: #2a2a2a;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 10px;
+            border: 1px solid #333;
+        }
+
+        .current-limit {
+            font-size: 3.2rem;
+            color: var(--accent-color);
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .log-box {
+            background: #101010;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: left;
+            margin-top: 10px;
+            max-height: 220px;
+            overflow-y: auto;
+            font-size: 0.9rem;
+        }
+
+        .scoreboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .scoreboard-table th, .scoreboard-table td {
+            border-bottom: 1px solid #333;
+            padding: 6px;
+            font-size: 0.9rem;
+        }
+
+        .autoplay-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #bbb;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 24px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #444;
+            transition: .2s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px; width: 18px;
+            left: 3px; bottom: 3px;
+            background-color: white;
+            transition: .2s;
+            border-radius: 50%;
+        }
+        input:checked + .slider { background-color: var(--accent-color); }
+        input:checked + .slider:before { transform: translateX(22px); }
+
+        .skull-anim {
+            font-size: 3.5rem;
+            animation: shake 0.6s infinite;
+            margin-top: 10px;
+        }
+        @keyframes shake {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(5deg); }
+            50% { transform: rotate(-5deg); }
+            75% { transform: rotate(5deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        /* scroll */
+        .log-box::-webkit-scrollbar { width: 8px; }
+        .log-box::-webkit-scrollbar-track { background: #1c1c1c; }
+        .log-box::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+    </style>
 </head>
 
 <body>
-<div class="wrap">
-  <div class="topbar">
-    <div class="brand">
-      <h1>Goblin Capital — Death Roll</h1>
-      <div class="sub">WoW /roll tarzı mini oyun • lokal istatistikler • bot opsiyonu</div>
-    </div>
-    <div class="pill">
-      Current Max: <b id="curMaxPill">—</b>
-      • Turn: <b id="turnPill">—</b>
-    </div>
-  </div>
 
-  <div class="grid">
-    <div class="card">
-      <h2>Oyun Ayarları</h2>
+<div class="container">
+    <h1>⚔️ Death Roll ⚔️</h1>
 
-      <div class="row">
-        <div class="field">
-          <label>Oyuncu 1</label>
-          <input id="p1" placeholder="Örn: Altug" value="Player1">
-        </div>
-        <div class="field">
-          <label>Oyuncu 2</label>
-          <input id="p2" placeholder="Örn: GoblinBot" value="GoblinBot">
-        </div>
-      </div>
+    <div id="setupPhase" class="phase active">
+        <h2>Lobby Settings</h2>
 
-      <div class="row" style="margin-top:10px;">
-        <div class="field">
-          <label>Başlangıç Max (ör. 1000)</label>
-          <input id="startMax" type="number" min="2" step="1" value="1000">
-        </div>
-        <div class="field">
-          <label>Bahis (g)</label>
-          <input id="wager" type="number" min="0" step="1" value="1000">
-        </div>
-        <div class="field">
-          <label>Bot (Oyuncu 2)</label>
-          <select id="botMode">
-            <option value="on">Açık (otomatik)</option>
-            <option value="off">Kapalı</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="btns">
-        <button class="primary" id="newGameBtn">New Game</button>
-        <button id="rollBtn" disabled>Roll</button>
-        <button id="autoBtn" disabled>Auto Play</button>
-        <button class="danger" id="resetStatsBtn">Reset Stats</button>
-      </div>
-
-      <div class="big">
-        <div class="panel">
-          <div class="title">
-            <b>Round</b>
-            <span class="tag" id="stateTag">Not started</span>
-          </div>
-
-          <div class="rollbox">
-            <div>
-              <div class="m">Last roll</div>
-              <div class="n" id="lastRoll">—</div>
-            </div>
-            <div style="text-align:right;">
-              <div class="m">Next max</div>
-              <div class="n" id="nextMax">—</div>
-            </div>
-          </div>
-
-          <div style="margin-top:10px;" class="statline">
-            <div><span>Wager:</span><b id="wagerLine">—</b> g</div>
-            <div><span>Loser pays:</span><b id="loserPays">—</b> g</div>
-          </div>
+        <div style="margin-bottom:15px;">
+            <label>Starting Gold:</label><br>
+            <input type="number" id="startGold" value="1000" min="2" style="width: 100px; margin-top:5px; font-size:1.1rem;">
         </div>
 
-        <div class="panel">
-          <div class="title">
-            <b>Stats (local)</b>
-            <span class="tag">Saved</span>
-          </div>
-          <div class="statline" id="statsBox"></div>
+        <div style="text-align: left; margin-bottom: 5px; color:#aaa; font-size:0.9rem;">Players:</div>
+        <ul id="playerListContainer" class="player-list"></ul>
+
+        <button onclick="addPlayerRow()" style="width:100%; margin-bottom: 10px;">+ Add Player</button>
+        <button class="btn-primary" onclick="startGame()">START GAME 🎲</button>
+
+        <div id="lobbyScoreboard" style="display:none; margin-top:30px;">
+            <h3 style="border-bottom:1px solid #444; padding-bottom:5px;">🏆 Scoreboard</h3>
+            <table class="scoreboard-table">
+                <thead><tr><th>Player</th><th>Wins (Alive)</th><th>Deaths</th></tr></thead>
+                <tbody id="scoreTableBody"></tbody>
+            </table>
+            <button class="btn-danger btn-small" style="margin-top:10px;" onclick="resetStats()">Reset Stats 🗑️</button>
         </div>
-      </div>
     </div>
 
-    <div class="card">
-      <h2>Roll Log</h2>
-      <div class="log" id="log"></div>
-      <div class="footer">
-        Tip: ID/Wowhead tarzı değil; bu oyun tamamen lokal çalışır. 🎲
-      </div>
+    <div id="gamePhase" class="phase">
+        <div id="turnBadge" class="turn-badge">Turn: ...</div>
+
+        <div class="autoplay-container">
+            <span>⚡ Auto-Play Mode:</span>
+            <label class="switch">
+                <input type="checkbox" id="autoPlayCheck" onchange="toggleAutoPlay()">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="game-status">
+            <div>Rolling (1 - X)</div>
+            <div id="limitDisplay" class="current-limit">1000</div>
+            <div id="statusMsg" style="min-height:20px; color:#f1c40f; font-style:italic; font-size:0.9rem;"></div>
+        </div>
+
+        <button id="rollBtn" class="btn-primary" onclick="humanRoll()">ROLL DICE 🎲</button>
+
+        <div class="log-box" id="gameLog"></div>
+        <button onclick="returnToLobby()" style="background: #444; margin-top:10px; font-size:0.8rem;">Cancel Game</button>
     </div>
-  </div>
+
+    <div id="resultPhase" class="phase">
+        <div class="skull-anim">☠️</div>
+        <h2 id="resultTitle" style="color:var(--danger-color); border:none;">Someone Died!</h2>
+        <p id="resultDesc">Details...</p>
+
+        <button class="btn-primary" onclick="restartGame()">Play Again 🔄</button>
+        <button onclick="returnToLobby()" style="margin-top:10px;">Return to Lobby 🏠</button>
+    </div>
 </div>
 
 <script>
-(() => {
-  // --- State ---
-  let state = {
-    started: false,
-    finished: false,
-    p1: "Player1",
-    p2: "GoblinBot",
-    startMax: 1000,
-    curMax: 1000,
-    wager: 1000,
-    turn: 1, // 1 -> p1, 2 -> p2
-    lastRoll: null,
-    autoplay: false,
-    botMode: "on",
-  };
+    // --- PERSISTENCE (localStorage) ---
+    const STATS_KEY = "goblin_capital_deathroll_stats_v1";
 
-  // --- DOM ---
-  const el = (id) => document.getElementById(id);
-  const p1El = el("p1");
-  const p2El = el("p2");
-  const startMaxEl = el("startMax");
-  const wagerEl = el("wager");
-  const botModeEl = el("botMode");
+    function normalizeName(name){ return (name || "").trim().toLowerCase(); }
 
-  const newGameBtn = el("newGameBtn");
-  const rollBtn = el("rollBtn");
-  const autoBtn = el("autoBtn");
-  const resetStatsBtn = el("resetStatsBtn");
-
-  const curMaxPill = el("curMaxPill");
-  const turnPill = el("turnPill");
-  const stateTag = el("stateTag");
-  const lastRollEl = el("lastRoll");
-  const nextMaxEl = el("nextMax");
-  const wagerLine = el("wagerLine");
-  const loserPays = el("loserPays");
-  const logEl = el("log");
-  const statsBox = el("statsBox");
-
-  // --- Local stats ---
-  const STATS_KEY = "goblin_capital_deathroll_stats_v1";
-  function loadStats(){
-    try{
-      const raw = localStorage.getItem(STATS_KEY);
-      if(!raw) return { games:0, p1Wins:0, p2Wins:0, lastWinner:null, lastLoser:null };
-      return JSON.parse(raw);
-    }catch(e){
-      return { games:0, p1Wins:0, p2Wins:0, lastWinner:null, lastLoser:null };
+    function loadStatsMap(){
+        try{
+            const raw = localStorage.getItem(STATS_KEY);
+            if(!raw) return {};
+            const obj = JSON.parse(raw);
+            return (obj && typeof obj === "object") ? obj : {};
+        }catch(e){ return {}; }
     }
-  }
-  function saveStats(s){ localStorage.setItem(STATS_KEY, JSON.stringify(s)); }
 
-  function renderStats(){
-    const s = loadStats();
-    const p1 = state.p1 || "Player1";
-    const p2 = state.p2 || "Player2";
-    statsBox.innerHTML = `
-      <div><span>Games:</span><b>${s.
+    function saveStatsMap(map){
+        try{ localStorage.setItem(STATS_KEY, JSON.stringify(map)); }catch(e){}
+    }
+
+    let statsMap = loadStatsMap();
+
+    function getStatsForName(name){
+        const key = normalizeName(name);
+        const s = statsMap[key];
+        return {
+            wins: (s && Number.isFinite(s.wins)) ? s.wins : 0,
+            losses: (s && Number.isFinite(s.losses)) ? s.losses : 0
+        };
+    }
+
+    function setStatsForName(name, wins, losses){
+        const key = normalizeName(name);
+        if(!key) return;
+        statsMap[key] = { wins: wins|0, losses: losses|0 };
+    }
+
+    function hasAnyStats(){
+        try{
+            return Object.values(statsMap).some(v => (v?.wins||0) > 0 || (v?.losses||0) > 0);
+        }catch(e){ return false; }
+    }
+
+    // --- DATA ---
+    let players = [];
+    let currentPlayerIndex = 0;
+    let currentLimit = 1000;
+    let gameActive = false;
+    let turnTimeout;
+
+    // Config
+    const BOT_DELAY_MS = 1000; // 1 second fixed delay
+
+    // Visuals
+    const playerColors = ['#3498db', '#e67e22', '#9b59b6', '#2ecc71', '#e74c3c', '#1abc9c'];
+
+    // --- INIT ---
+    window.onload = function() {
+        addPlayerRow("Player 1", "human");
+        addPlayerRow("GoblinBot", "bot");
+
+        if (hasAnyStats()){
+            document.getElementById('lobbyScoreboard').style.display = "block";
+        }
+        updateScoreboard();
+    }
+
+    function addPlayerRow(defaultName = "", defaultType = "human") {
+        const list = document.getElementById('playerListContainer');
+        const count = list.children.length;
+        const color = playerColors[count % playerColors.length];
+        const uniqueId = Date.now() + Math.random();
+
+        const li = document.createElement('li');
+        li.className = 'player-item';
+        li.style.borderLeft = `5px solid ${color}`;
+
+        li.innerHTML = `
+            <input type="text" placeholder="Name" value="${(defaultName || 'Player ' + (count+1)).replace(/"/g,'&quot;')}" data-id="${uniqueId}" data-color="${color}">
+            <span class="bot-toggle ${defaultType === 'bot' ? 'is-bot' : 'is-human'}"
+                  onclick="toggleBot(this)" data-type="${defaultType}">
+                  ${defaultType === 'bot' ? '🤖 Bot' : '👤 Human'}
+            </span>
+            <button class="remove-btn" onclick="removePlayer(this)">✖</button>
+        `;
+
+        const input = li.querySelector('input');
+        input.addEventListener('input', () => {
+            document.getElementById('lobbyScoreboard').style.display = "block";
+            updateScoreboard();
+        });
+
+        list.appendChild(li);
+
+        document.getElementById('lobbyScoreboard').style.display = "block";
+        updateScoreboard();
+    }
+
+    function removePlayer(btn) {
+        btn.parentElement.remove();
+        document.getElementById('lobbyScoreboard').style.display = "block";
+        updateScoreboard();
+    }
+
+    function toggleBot(span) {
+        if (span.getAttribute('data-type') === 'human') {
+            span.setAttribute('data-type', 'bot');
+            span.className = 'bot-toggle is-bot';
+            span.innerText = '🤖 Bot';
+        } else {
+            span.setAttribute('data-type', 'human');
+            span.className = 'bot-toggle is-human';
+            span.innerText = '👤 Human';
+        }
+    }
+
+    function resetStats() {
+        if(!confirm("Are you sure you want to reset all stats?")) return;
+        statsMap = {};
+        saveStatsMap(statsMap);
+        updateScoreboard();
+    }
+
+    // --- INITIATIVE (3+ players) ---
+    function rollInitiativeReport() {
+        if (players.length < 2) return { starterIdx: 0, lines: [] };
+
+        const lines = [];
+        lines.push(`<div style="color:#aaa; margin-top:6px;">🎯 Rolling initiative (d20) to decide who starts...</div>`);
+
+        let contenders = players.map((p, idx) => ({ idx, name: p.name, color: p.color }));
+        let round = 1;
+
+        while (true) {
+            const rolls = contenders.map(c => ({ ...c, roll: Math.floor(Math.random() * 20) + 1 }));
+            const max = Math.max(...rolls.map(r => r.roll));
+            const top = rolls.filter(r => r.roll === max);
+
+            const parts = rolls
+              .map(r => `<span style="color:${r.color}; font-weight:bold;">${r.name}</span>: <b>${r.roll}</b>`)
+              .join(" • ");
+            lines.push(`<div style="color:#aaa;">Initiative R${round}: ${parts}</div>`);
+
+            if (top.length === 1) {
+                lines.push(`<div style="color:#2ecc71; font-weight:bold;">✅ ${top[0].name} starts!</div>`);
+                return { starterIdx: top[0].idx, lines };
+            }
+
+            const tiedNames = top.map(t => t.name).join(", ");
+            lines.push(`<div style="color:#f1c40f;">⚠️ Tie between: ${tiedNames}. Rerolling...</div>`);
+            contenders = top.map(t => ({ idx: t.idx, name: t.name, color: t.color }));
+            round++;
+        }
+    }
+
+    // --- GAME LOGIC ---
+    function startGame() {
+        const list = document.getElementById('playerListContainer');
+        const inputs = list.querySelectorAll('input');
+        const toggles = list.querySelectorAll('.bot-toggle');
+
+        if (inputs.length < 2) {
+            alert("You need at least 2 players.");
+            return;
+        }
+
+        let newPlayerList = [];
+        for (let i = 0; i < inputs.length; i++) {
+            const name = (inputs[i].value || `Player ${i+1}`).trim();
+            const type = toggles[i].getAttribute('data-type');
+            const color = inputs[i].getAttribute('data-color') || playerColors[i % playerColors.length];
+            const st = getStatsForName(name);
+
+            newPlayerList.push({
+                id: inputs[i].getAttribute('data-id') || (Date.now()+Math.random()),
+                name, type, color,
+                wins: st.wins,
+                losses: st.losses
+            });
+        }
+        players = newPlayerList;
+
+        let startVal = parseInt(document.getElementById('startGold').value);
+        if (!Number.isFinite(startVal) || startVal < 2) startVal = 2;
+        currentLimit = startVal;
+        gameActive = true;
+
+        document.getElementById('setupPhase').classList.remove('active');
+        document.getElementById('resultPhase').classList.remove('active');
+        document.getElementById('gamePhase').classList.add('active');
+
+        document.getElementById('gameLog').innerHTML = `<div style="color:#aaa">Game Started! Limit: ${currentLimit}</div>`;
+        document.getElementById('limitDisplay').innerText = currentLimit;
+
+        document.getElementById('autoPlayCheck').checked = false;
+
+        if (players.length >= 3) {
+            const rep = rollInitiativeReport();
+            currentPlayerIndex = rep.starterIdx;
+            for (let i = rep.lines.length - 1; i >= 0; i--) addLog(rep.lines[i]);
+        } else {
+            currentPlayerIndex = 0;
+        }
+
+        updateTurnUI();
+        processTurn();
+    }
+
+    function processTurn() {
+        if (!gameActive) return;
+
+        clearTimeout(turnTimeout);
+        lockButton(true);
+
+        let player = players[currentPlayerIndex];
+        let autoPlay = document.getElementById('autoPlayCheck').checked;
+
+        updateTurnUI();
+
+        if (player.type === 'bot' || autoPlay) {
+            document.getElementById('statusMsg').innerText = player.type === 'bot' ? "Bot is thinking..." : "Auto-Play...";
+            turnTimeout = setTimeout(() => {
+                if(!gameActive) return;
+                let roll = Math.floor(Math.random() * currentLimit) + 1;
+                handleRollResult(roll);
+            }, BOT_DELAY_MS);
+        } else {
+            document.getElementById('statusMsg').innerText = "Your turn! Click ROLL.";
+            lockButton(false);
+        }
+    }
+
+    function toggleAutoPlay() {
+        if (!gameActive) return;
+        processTurn();
+    }
+
+    function humanRoll() {
+        if (!gameActive) return;
+        let player = players[currentPlayerIndex];
+        if (player.type === 'bot') return;
+        if (document.getElementById('autoPlayCheck').checked) return;
+
+        lockButton(true);
+        let roll = Math.floor(Math.random() * currentLimit) + 1;
+        handleRollResult(roll);
+    }
+
+    function handleRollResult(roll) {
+        let player = players[currentPlayerIndex];
+        let typeIcon = player.type === 'bot' ? '🤖' : '👤';
+
+        addLog(`<span style="color:${player.color}">${typeIcon} <b>${player.name}</b></span> rolled: <b>${roll}</b> (1-${currentLimit})`);
+
+        if (roll === 1) {
+            gameOver(player);
+        } else {
+            currentLimit = roll;
+            document.getElementById('limitDisplay').innerText = currentLimit;
+
+            currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+            processTurn();
+        }
+    }
+
+    function gameOver(loser) {
+        gameActive = false;
+        document.getElementById('statusMsg').innerText = "";
+        lockButton(true);
+
+        loser.losses++;
+        players.forEach(p => { if (p.id !== loser.id) p.wins++; });
+
+        players.forEach(p => setStatsForName(p.name, p.wins, p.losses));
+        saveStatsMap(statsMap);
+
+        document.getElementById('gamePhase').classList.remove('active');
+        document.getElementById('resultPhase').classList.add('active');
+
+        document.getElementById('resultTitle').innerText = `${loser.name} DIED!`;
+        document.getElementById('resultDesc').innerHTML = `They rolled <b>1</b> and lost.`;
+
+        updateScoreboard();
+    }
+
+    function lockButton(lock) {
+        document.getElementById('rollBtn').disabled = lock;
+    }
+
+    function updateTurnUI() {
+        if(!players.length) return;
+        let player = players[currentPlayerIndex];
+        let icon = player.type === 'bot' ? '🤖' : '👤';
+        document.getElementById('turnBadge').innerHTML =
+            `Turn: <span style="color:${player.color}; font-weight:bold;">${icon} ${player.name}</span>`;
+    }
+
+    function addLog(htmlLine) {
+        const logBox = document.getElementById('gameLog');
+        const div = document.createElement('div');
+        div.innerHTML = htmlLine;
+        logBox.prepend(div);
+    }
+
+    function restartGame() {
+        clearTimeout(turnTimeout);
+
+        let startVal = parseInt(document.getElementById('startGold').value);
+        if (!Number.isFinite(startVal) || startVal < 2) startVal = 2;
+        currentLimit = startVal;
+
+        document.getElementById('resultPhase').classList.remove('active');
+        document.getElementById('gamePhase').classList.add('active');
+
+        document.getElementById('gameLog').innerHTML = `<div style="color:#aaa">New Game! Limit: ${currentLimit}</div>`;
+        document.getElementById('limitDisplay').innerText = currentLimit;
+
+        document.getElementById('autoPlayCheck').checked = false;
+
+        if (players.length >= 3) {
+            const rep = rollInitiativeReport();
+            currentPlayerIndex = rep.starterIdx;
+            for (let i = rep.lines.length - 1; i >= 0; i--) addLog(rep.lines[i]);
+        } else {
+            currentPlayerIndex = 0;
+        }
+
+        gameActive = true;
+        processTurn();
+    }
+
+    function returnToLobby() {
+        clearTimeout(turnTimeout);
+        gameActive = false;
+        document.getElementById('gamePhase').classList.remove('active');
+        document.getElementById('resultPhase').classList.remove('active');
+        document.getElementById('setupPhase').classList.add('active');
+
+        document.getElementById('lobbyScoreboard').style.display = "block";
+        updateScoreboard();
+    }
+
+    function updateScoreboard() {
+        let tbody = document.getElementById('scoreTableBody');
+        tbody.innerHTML = "";
+
+        const inGame = document.getElementById('gamePhase').classList.contains('active') && players.length;
+
+        let listForTable = [];
+        if (inGame) {
+            listForTable = players.map(p => ({ name: p.name, color: p.color, wins: p.wins, losses: p.losses }));
+        } else {
+            const list = document.getElementById('playerListContainer');
+            const inputs = list.querySelectorAll('input');
+            inputs.forEach((inp, i) => {
+                const name = (inp.value || `Player ${i+1}`).trim();
+                const color = inp.getAttribute('data-color') || playerColors[i % playerColors.length];
+                const st = getStatsForName(name);
+                listForTable.push({ name, color, wins: st.wins, losses: st.losses });
+            });
+        }
+
+        listForTable.sort((a,b) => b.wins - a.wins);
+
+        listForTable.forEach(p => {
+            let row = `<tr>
+                <td style="color:${p.color}; font-weight:bold;">${p.name}</td>
+                <td style="color:var(--success-color)">${p.wins}</td>
+                <td style="color:var(--danger-color)">${p.losses}</td>
+            </tr>`;
+            tbody.innerHTML += row;
+        });
+
+        document.getElementById('lobbyScoreboard').style.display = "block";
+    }
+</script>
+
+</body>
+</html>
