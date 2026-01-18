@@ -411,7 +411,7 @@
         updateScoreboard();
     }
 
-    // --- INITIATIVE (3+ players) ---
+    // --- INITIATIVE (2+ players) ---
     function rollInitiativeReport() {
         if (players.length < 2) return { starterIdx: 0, lines: [] };
 
@@ -441,6 +441,27 @@
             contenders = top.map(t => ({ idx: t.idx, name: t.name, color: t.color }));
             round++;
         }
+    }
+
+
+    // --- ODDS (per roll, for the current roller) ---
+    // Die chance = rolling 1 on THIS roll (instant death). Survive chance = not rolling 1.
+    function calcImmediateOdds(limit){
+        const lim = Number(limit);
+        if (!Number.isFinite(lim) || lim <= 0) {
+            return { survivePct: "0.00%", diePct: "0.00%" };
+        }
+        const die = 1 / lim;
+        const survive = 1 - die;
+        return {
+            survivePct: (survive * 100).toFixed(2) + "%",
+            diePct: (die * 100).toFixed(2) + "%"
+        };
+    }
+
+    function oddsInline(limit){
+        const o = calcImmediateOdds(limit);
+        return "Survive: " + o.survivePct + " • Die: " + o.diePct;
     }
 
     // --- GAME LOGIC ---
@@ -484,7 +505,7 @@
 
         document.getElementById('autoPlayCheck').checked = false;
 
-        if (players.length >= 3) {
+        if (players.length >= 2) {
             const rep = rollInitiativeReport();
             currentPlayerIndex = rep.starterIdx;
             for (let i = rep.lines.length - 1; i >= 0; i--) addLog(rep.lines[i]);
@@ -505,17 +526,19 @@
         let player = players[currentPlayerIndex];
         let autoPlay = document.getElementById('autoPlayCheck').checked;
 
+        const oddsLine = oddsInline(currentLimit);
+
         updateTurnUI();
 
         if (player.type === 'bot' || autoPlay) {
-            document.getElementById('statusMsg').innerText = player.type === 'bot' ? "Bot is thinking..." : "Auto-Play...";
+            document.getElementById('statusMsg').innerText = (player.type === 'bot' ? "Bot is thinking..." : "Auto-Play...") + " (" + oddsLine + ")";
             turnTimeout = setTimeout(() => {
                 if(!gameActive) return;
                 let roll = Math.floor(Math.random() * currentLimit) + 1;
                 handleRollResult(roll);
             }, BOT_DELAY_MS);
         } else {
-            document.getElementById('statusMsg').innerText = "Your turn! Click ROLL.";
+            document.getElementById('statusMsg').innerText = "Your turn! Click ROLL. (" + oddsLine + ")";
             lockButton(false);
         }
     }
@@ -540,7 +563,9 @@
         let player = players[currentPlayerIndex];
         let typeIcon = player.type === 'bot' ? '🤖' : '👤';
 
-        addLog(`<span style="color:${player.color}">${typeIcon} <b>${player.name}</b></span> rolled: <b>${roll}</b> (1-${currentLimit})`);
+        const oddsLine = oddsInline(currentLimit);
+
+        addLog(`<span style="color:${player.color}">${typeIcon} <b>${player.name}</b></span> rolled: <b>${roll}</b> (1-${currentLimit}) <span style="color:#aaa;">| ${oddsLine}</span>`);
 
         if (roll === 1) {
             gameOver(player);
@@ -607,7 +632,7 @@
 
         document.getElementById('autoPlayCheck').checked = false;
 
-        if (players.length >= 3) {
+        if (players.length >= 2) {
             const rep = rollInitiativeReport();
             currentPlayerIndex = rep.starterIdx;
             for (let i = rep.lines.length - 1; i >= 0; i--) addLog(rep.lines[i]);
